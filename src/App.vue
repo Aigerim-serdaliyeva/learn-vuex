@@ -1,27 +1,44 @@
 <template>
   <div id="app">
-    <FormPost />
+    <Posts />
     <hr>
-    <h1>{{postCount}}</h1>
-    <div class="post" v-for="post in validPosts" :key="post.id">
-      <h3>{{post.title}}</h3>
-      <p>{{post.body}}</p>
-    </div>
+    <h2>{{count}}</h2>
+    <button @click="increase">Increase</button>
+    <button @click="decrease">Decrease</button> 
+    <br>
+    <input type="number" placeholder="" v-model.number="increment">
   </div>
 </template>
 
 <script>
-import FormPost from './components/FormPost.vue'
-import {mapGetters, mapActions} from "vuex"
+// import {mapState} from 'vuex'
+import Posts from "./components/Posts"
+import {INCREASE, DECREASE} from "./store/mutation-type"
 
 export default {
   name: 'app',
-  computed: mapGetters(['validPosts', 'postCount']),
-  methods: mapActions(["fetchPosts"]),
-  async mounted() {
-    this.fetchPosts(3)
+  data() {
+    return {
+      increment: 1
+    }
   },
-  components: { FormPost }
+  components: {
+    Posts
+  },
+  computed: {
+    count: function() {
+      return this.$store.state.count;
+    }
+    // ...mapState(["count"])
+  },
+  methods: {
+    increase() {
+      this.$store.commit(INCREASE, this.increment)
+    }, 
+    decrease() {
+      this.$store.commit(DECREASE, this.increment)
+    }
+  }
 }
 </script>
 
@@ -33,13 +50,5 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-
-.post {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 400px;
-  margin: 20px auto;
-
 }
 </style>
